@@ -38,9 +38,31 @@
 |---|---|---|
 | `docs/docs/tutorials/chat-and-language-models.md` | `docs/docs/tutorials/chat-and-language-models-zh.md` | 消息模型、上下文、多模态 |
 
-### 2.3 这一阶段建议实践什么
+### 2.3 核心模型参数与行为控制
 
-建议你至少完成两个小练习。第一个练习是接入一个模型，实现单轮聊天。第二个练习是手工传入历史消息，实现一个最简单的两轮对话。这样做的目的，是在引入 Chat Memory 之前先亲手理解“模型其实不记忆上下文”。
+理解模型的基本调用后，你需要掌握如何通过参数控制模型的行为，以及如何处理流式响应和日志。
+
+| 推荐阅读 | 中文文件 | 重点关注 |
+|---|---|---|
+| `docs/docs/tutorials/model-parameters.md` | `docs/docs/tutorials/model-parameters-zh.md` | temperature, topP, maxTokens 等参数对模型输出的影响 |
+| `docs/docs/tutorials/response-streaming.md` | `docs/docs/tutorials/response-streaming-zh.md` | 如何实现实时流式输出，提升用户体验 |
+| `docs/docs/tutorials/logging.md` | `docs/docs/tutorials/logging-zh.md` | 如何配置日志记录，监控请求与响应 |
+| `docs/docs/tutorials/customizable-http-client.md` | `docs/docs/tutorials/customizable-http-client-zh.md` | 如何定制底层 HTTP 客户端 |
+| `docs/docs/tutorials/observability.md` | `docs/docs/tutorials/observability-zh.md` | 通过监听器机制实现可观测性 |
+
+### 2.4 模型集成
+
+LangChain4j 支持多种 LLM 提供商。你需要了解如何集成你选择的模型。
+
+| 推荐阅读 | 中文文件 | 重点关注 |
+|---|---|---|
+| `docs/docs/integrations/language-models/index.md` | `docs/docs/integrations/language-models/index-zh.md` | 语言模型集成概览 |
+| `docs/docs/integrations/language-models/open-ai.md` | `docs/docs/integrations/language-models/open-ai-zh.md` | OpenAI 聊天模型与嵌入模型集成 |
+| `docs/docs/integrations/language-models/azure-open-ai.md` | `docs/docs/integrations/language-models/azure-open-ai-zh.md` | Azure OpenAI 聊天模型与嵌入模型集成 |
+
+### 2.5 这一阶段建议实践什么
+
+建议你至少完成两个小练习。第一个练习是接入一个模型，实现单轮聊天。第二个练习是手工传入历史消息，实现一个最简单的两轮对话。然后尝试调整 `temperature` 参数，观察模型输出的变化。最后，尝试集成你选择的模型，并配置日志记录。
 
 ## 三、第二阶段：用 AI Services 快速构建业务能力
 
@@ -89,7 +111,10 @@
 | 推荐阅读 | 中文文件 | 重点关注 |
 |---|---|---|
 | `docs/docs/tutorials/rag.md` | `docs/docs/tutorials/rag-zh.md` | RAG 全链路、检索增强、知识问答 |
-| `docs/docs/tutorials/embedding-stores.md` | 暂未翻译 | 向量存储通用概念 |
+| `docs/docs/tutorials/embedding-stores.md` | `docs/docs/tutorials/embedding-stores-zh.md` | 向量存储通用概念与集成 |
+| `docs/docs/tutorials/easy-rag.md` | `docs/docs/tutorials/easy-rag-zh.md` | 简易 RAG 入门 |
+| `docs/docs/integrations/embedding-models/open-ai.md` | `docs/docs/integrations/embedding-models/open-ai-zh.md` | OpenAI 嵌入模型集成 |
+| `docs/docs/integrations/embedding-models/azure-open-ai.md` | `docs/docs/integrations/embedding-models/azure-open-ai-zh.md` | Azure OpenAI 嵌入模型集成 |
 | `docs/docs/integrations/document-loaders/*` | 暂未翻译 | 文档导入来源 |
 | `docs/docs/integrations/document-parsers/*` | 暂未翻译 | 文档格式解析 |
 | `docs/docs/integrations/embedding-stores/*` | 暂未翻译 | 具体向量库集成 |
