@@ -1,32 +1,104 @@
-# MCP
+---
+sidebar_position: 27
+---
+# MCP (模型上下文协议)
 
-**MCP（Model Context Protocol）** 可以理解为一种让模型或 Agent 以统一方式连接外部工具与上下文资源的协议化机制。在 LangChain4j 的演进中，MCP 的价值越来越突出，因为它为“模型如何安全、标准化地接入外部能力”提供了统一接口。
+**MCP (Model Context Protocol)** 是一种开放协议，旨在标准化大型语言模型（LLM）与外部工具、服务和系统之间的通信。在 LangChain4j 中，MCP 提供了一种机制，使得 Agent 能够以统一的方式发现、描述和调用各种外部能力，无论这些能力是本地函数、远程 API 还是其他 Agent。
 
-## 为什么 MCP 值得关注
+## 为什么需要 MCP
 
-在传统的 Tools 模式下，很多能力往往是直接以内嵌 Java 方法的形式提供给模型。而在更开放、更复杂的系统中，能力来源可能不再局限于当前应用本地代码，而是来自独立服务、远程工具、其他进程、第三方系统甚至标准化的外部工具服务器。
+随着 LLM 应用的复杂性增加，Agent 需要与越来越多的外部系统交互。如果没有一个标准化的协议，每个集成都需要定制开发，导致集成成本高、可维护性差。MCP 解决了这些问题：
 
-MCP 的重要性就在于，它把这些外部能力以更标准化的方式组织起来，使模型或 Agent 能够通过一致协议发现、理解并调用它们。
+*   **标准化通信**：提供统一的接口和消息格式，简化 LLM 与外部工具的集成。
+*   **能力发现**：允许 Agent 动态发现可用的工具及其功能描述。
+*   **跨语言/平台**：协议独立于具体的编程语言和平台，促进异构系统间的互操作性。
+*   **可扩展性**：易于添加新的工具和服务，无需修改 Agent 核心逻辑。
 
-| 视角 | MCP 的价值 |
+## MCP 的核心概念
+
+MCP 的核心在于其定义了一套消息类型和交互模式，使得 Agent 和工具之间能够进行结构化的对话。
+
+| 概念 | 说明 |
 |---|---|
-| 工具接入 | 让外部工具能力可以通过统一协议暴露 |
-| 系统解耦 | 减少模型侧与具体系统实现的强耦合 |
-| 能力复用 | 一个 MCP 服务可被多个模型或 Agent 复用 |
-| 生态扩展 | 有利于跨系统、跨进程、跨团队共享工具能力 |
+| **Agent** | 发送请求并处理响应的实体（通常是 LLM 或其包装器） |
+| **Tool** | 接收请求并执行特定操作的外部能力 |
+| **消息** | Agent 与 Tool 之间交换的结构化数据，包括请求、响应、事件等 |
+| **传输** | 承载 MCP 消息的通信机制，例如 HTTP、WebSocket、STDIO 等 |
 
-## MCP 与 Tools 的关系
+## LangChain4j 中的 MCP 实现
 
-可以把 MCP 理解为对 Tools 生态的一次标准化升级。Tools 更偏向“应用内部定义并暴露函数给模型”；MCP 则更偏向“以协议方式连接外部工具与上下文能力”。两者并不冲突，反而是互补关系。
+LangChain4j 提供了对 MCP 协议的支持，允许你构建与 MCP 兼容的工具和 Agent。这通常涉及：
 
-从学习角度看，如果你已经理解了 Tools 的用途，那么理解 MCP 会更自然。因为你会更容易明白：MCP 解决的是“工具不只存在于本地代码里时，系统应如何接入”的问题。
+1.  **实现 MCP 传输**：选择合适的传输方式（如 HTTP、WebSocket）来发送和接收 MCP 消息。
+2.  **创建 MCP 工具**：将你的 Java 函数包装成 MCP 兼容的工具，使其能够被远程 Agent 调用。
+3.  **配置 MCP Agent**：让你的 Agent 能够通过 MCP 传输发现并调用远程工具。
 
-## MCP 在 Agent 系统中的意义
+### 示例：配置 MCP 传输
 
-在更复杂的 Agent 系统中，MCP 的价值会进一步放大。因为当多个 Agent 需要共享一批外部能力，或者当能力来源本身是独立服务时，使用协议化接入方式会比逐个本地嵌入工具更清晰、更可治理。
+LangChain4j 提供了多种 MCP 传输实现，例如基于 HTTP 的 `StreamableHttpMcpTransport` 和基于 WebSocket 的 `WebSocketMcpTransport`。
 
-因此，MCP 常常出现在更偏平台化、生态化、工具中心化的系统设计中。
+**Streamable HTTP 传输：**
+
+```java
+McpTransport transport = StreamableHttpMcpTransport.builder()
+        .url("http://localhost:3001/mcp") // MCP 服务器的 POST 端点
+        .logRequests(true) // 是否记录请求日志
+        .logResponses(true) // 是否记录响应日志
+        .build();
+```
+
+**_注意:_** `StreamableHttpMcpTransport` 可以选择性地开启一个基于 GET 的 SSE 流，用于接收服务器发起的通知和请求。通过 `.subsidiaryChannel(true)` 启用，默认禁用。如果服务器不支持，传输会记录警告并继续。如果流建立后中断，传输会自动重连（遵循服务器的 `retry` 值，默认为 5 秒）。
+
+**WebSocket 传输：**
+
+```java
+McpTransport transport = WebSocketMcpTransport.builder()
+        .url("ws://localhost:3001/mcp/ws") // MCP WebSocket 端点
+        .logResponses(true)
+        .logRequests(true)
+        .build();
+```
+
+**传统 HTTP 传输：**
+
+对于传统的 HTTP 传输，有两个 URL，一个用于启动 SSE 通道，一个用于通过 `POST` 提交命令。后者由服务器动态提供，前者需要使用 `sseUrl` 方法指定：
+
+```java
+McpTransport transport = HttpMcpTransport.builder()
+    .sseUrl("http://localhost:3001/sse")
+    .logRequests(true) // 如果你想在日志中看到流量
+    .logResponses(true)
+    .build();
+```
+
+**Docker stdio 传输：**
+
+首先，你需要向 `pom.xml` 添加一个模块：
+
+```xml
+<dependency>
+    <groupId>dev.langchain4j</groupId>
+    <artifactId>langchain4j-mcp-docker</artifactId>
+</dependency>
+```
+
+然后，你需要创建一个 Docker 传输：
+
+```java
+// 示例代码，具体实现请参考官方文档
+McpTransport transport = DockerMcpTransport.builder()
+    .imageName("my-mcp-tool-image")
+    .build();
+```
+
+## MCP 与 Tools/Agents 的关系
+
+MCP 可以看作是 Tools 和 Agents 的一个更通用、更解耦的扩展。它允许你的 Agent 不仅仅调用本地 Java 方法，还能通过网络调用任何遵循 MCP 协议的外部服务。这为构建分布式、可扩展的 Agent 系统提供了强大的基础。
 
 ## 学习建议
 
-如果你当前处于基础阶段，可以先把 MCP 视为“外部工具协议化接入”的能力来理解，不必一开始就钻研全部细节。等你完成 Tools、RAG 与基础 Agent 学习后，再回来看 MCP，会更容易看出它在复杂系统里的价值。
+*   **理解协议本身**：MCP 的核心是协议。理解其消息格式和交互模式，有助于你更好地设计和集成 MCP 兼容的工具。
+*   **从简单传输开始**：可以从 HTTP 传输开始，逐步过渡到 WebSocket 或其他更复杂的传输方式。
+*   **结合实际场景**：思考你的业务中哪些外部服务可以通过 MCP 协议暴露给 Agent，从而实现更强大的自动化能力。
+
+掌握 MCP 将使你的 LangChain4j 应用能够无缝集成各种外部能力，构建出更强大、更灵活的 Agent 系统。
