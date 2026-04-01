@@ -17,8 +17,11 @@ public class MemoryExample {
     public static void main(String[] args) {
         // 1. 初始化聊天模型
         OpenAiChatModel chatModel = OpenAiChatModel.builder()
-                .apiKey(System.getenv("OPENAI_API_KEY"))
-                .baseUrl(System.getenv("OPENAI_BASE_URL"))
+                .apiKey("sk-sp-064ecd47b4d94efd981296ea84acff75")
+                .baseUrl("https://coding.dashscope.aliyuncs.com/v1")
+                .modelName("glm-5")
+                .logRequests(true)
+                .logResponses(true)
                 .build();
 
         // 2. 初始化聊天记忆 (这里使用内存存储，保留最近 10 条消息)

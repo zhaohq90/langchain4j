@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/zhaohq/projects/langchain4j -name *.java -path *openai* -exec grep -l \"StreamingResponseHandler\\\\|generate\" {})",
+      "Bash(2)",
+      "Bash(find /Users/zhaohq/projects/langchain4j/langchain4j-open-ai -name *Streaming*.java)",
+      "mcp__ide__getDiagnostics"
+    ]
+  }
+}
