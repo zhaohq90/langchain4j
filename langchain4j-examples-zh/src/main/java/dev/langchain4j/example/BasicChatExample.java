@@ -64,7 +64,8 @@ public class BasicChatExample {
         // 2. 使用 CompletableFuture 等待流式响应完成
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
-        String userMessage = "请用一句话解释什么是流式输出？";
+        //String userMessage = "请用一句话解释什么是流式输出？";
+        String userMessage = "使用 java 实现一个冒泡排序, 然后比较下常见的几种排序算法, 比如效率, 资源占用, 是否稳定等";
 
         System.out.println("========================================");
         System.out.println("【流式聊天示例 - 实时输出】");
@@ -103,7 +104,7 @@ public class BasicChatExample {
         });
 
         // 4. 等待流式响应完成（最多等待 60 秒）
-        ChatResponse response = futureResponse.get(60, TimeUnit.SECONDS);
+        ChatResponse response = futureResponse.get(600, TimeUnit.SECONDS);
         System.out.println("【Token 使用量】: " + response.tokenUsage());
     }
 }
