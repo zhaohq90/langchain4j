@@ -31,8 +31,11 @@ public class AgentExample {
     public static void main(String[] args) {
         // 2. 初始化聊天模型
         OpenAiChatModel chatModel = OpenAiChatModel.builder()
-                .apiKey(System.getenv("OPENAI_API_KEY"))
-                .baseUrl(System.getenv("OPENAI_BASE_URL"))
+                .apiKey("sk-sp-064ecd47b4d94efd981296ea84acff75")
+                .baseUrl("https://coding.dashscope.aliyuncs.com/v1")
+                .modelName("glm-5")
+                .logRequests(true)
+                .logResponses(true)
                 .build();
 
         // 3. 创建 AI 服务 (声明式接口)
