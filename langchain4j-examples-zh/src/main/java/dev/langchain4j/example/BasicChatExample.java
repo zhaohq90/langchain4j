@@ -64,6 +64,9 @@ public class BasicChatExample {
         // 2. 使用 CompletableFuture 等待流式响应完成
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
+        // 记录请求开始时间
+        long requestStartTime = System.currentTimeMillis();
+
         //String userMessage = "请用一句话解释什么是流式输出？";
         String userMessage = "使用 java 实现一个冒泡排序, 然后比较下常见的几种排序算法, 比如效率, 资源占用, 是否稳定等";
 
@@ -76,9 +79,19 @@ public class BasicChatExample {
         model.chat(userMessage, new StreamingChatResponseHandler() {
 
             private final StringBuilder responseBuilder = new StringBuilder();
+            private boolean firstTokenReceived = false;
+            private long firstTokenTime = 0;
 
             @Override
             public void onPartialResponse(String partialResponse) {
+                // 记录首字响应时间（TTFT - Time To First Token）
+                if (!firstTokenReceived) {
+                    firstTokenReceived = true;
+                    firstTokenTime = System.currentTimeMillis();
+                    long ttft = firstTokenTime - requestStartTime;
+                    System.out.println("\n【首字响应时间 TTFT】: " + ttft + " ms");
+                    System.out.print("AI: ");
+                }
                 // 每收到一个部分响应就立即打印并记录
                 System.out.print(partialResponse);
                 System.out.flush();
