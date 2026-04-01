@@ -1,7 +1,6 @@
 package dev.langchain4j.example;
 
 import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.service.AiServices;
 
@@ -31,7 +30,7 @@ public class AgentExample {
 
     public static void main(String[] args) {
         // 2. 初始化聊天模型
-        ChatLanguageModel chatModel = OpenAiChatModel.builder()
+        OpenAiChatModel chatModel = OpenAiChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))
                 .baseUrl(System.getenv("OPENAI_BASE_URL"))
                 .build();
@@ -42,7 +41,7 @@ public class AgentExample {
         }
 
         Assistant assistant = AiServices.builder(Assistant.class)
-                .chatLanguageModel(chatModel)
+                .chatModel(chatModel)
                 .tools(new Calculator()) // 注册工具
                 .build();
 

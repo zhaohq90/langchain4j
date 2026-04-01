@@ -3,7 +3,6 @@ package dev.langchain4j.example;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2q.AllMiniLmL6V2QuantizedEmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -27,7 +26,7 @@ public class RagExample {
 
     public static void main(String[] args) {
         // 1. 初始化聊天模型
-        ChatLanguageModel chatModel = OpenAiChatModel.builder()
+        OpenAiChatModel chatModel = OpenAiChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))
                 .baseUrl(System.getenv("OPENAI_BASE_URL"))
                 .build();
@@ -60,7 +59,8 @@ public class RagExample {
         }
 
         Assistant assistant = AiServices.builder(Assistant.class)
-                .chatLanguageModel(chatModel)
+               // .chatLanguageModel(chatModel)
+                .chatModel(chatModel)
                 .contentRetriever(EmbeddingStoreContentRetriever.from(embeddingStore))
                 .build();
 

@@ -1,6 +1,5 @@
 package dev.langchain4j.example;
 
-import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 
 /**
@@ -15,16 +14,18 @@ public class BasicChatExample {
     public static void main(String[] args) {
         // 1. 初始化聊天模型
         // 这里以 OpenAI 为例，你可以根据需要替换为 Ollama, DashScope 等
-        ChatLanguageModel model = OpenAiChatModel.builder()
-                .apiKey(System.getenv("OPENAI_API_KEY"))
-                .baseUrl(System.getenv("OPENAI_BASE_URL")) // 默认为 https://api.openai.com/v1
+        OpenAiChatModel model = OpenAiChatModel.builder()
+                .apiKey("sk-sp-064ecd47b4d94efd981296ea84acff75")
+                .baseUrl("https://coding.dashscope.aliyuncs.com/v1") // 默认为 https://api.openai.com/v1
+                //glm-5
+                .modelName("glm-5")
                 .logRequests(true)  // 开启请求日志，方便调试
                 .logResponses(true) // 开启响应日志
                 .build();
 
         // 2. 发送消息并获取回复
         String userMessage = "你好，LangChain4j！请简要介绍一下你自己。";
-        String response = model.generate(userMessage);
+        String response = model.chat(userMessage);
 
         // 3. 打印结果
         System.out.println("========================================");

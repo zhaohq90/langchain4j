@@ -2,7 +2,6 @@ package dev.langchain4j.example;
 
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
-import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.service.AiServices;
 
@@ -17,7 +16,7 @@ public class MemoryExample {
 
     public static void main(String[] args) {
         // 1. 初始化聊天模型
-        ChatLanguageModel chatModel = OpenAiChatModel.builder()
+        OpenAiChatModel chatModel = OpenAiChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))
                 .baseUrl(System.getenv("OPENAI_BASE_URL"))
                 .build();
@@ -31,7 +30,7 @@ public class MemoryExample {
         }
 
         Assistant assistant = AiServices.builder(Assistant.class)
-                .chatLanguageModel(chatModel)
+                .chatModel(chatModel)
                 .chatMemory(chatMemory)
                 .build();
 
